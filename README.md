@@ -1,2 +1,3 @@
 # FridgeApp
 aplikacja lodówkowa
+blablabla
