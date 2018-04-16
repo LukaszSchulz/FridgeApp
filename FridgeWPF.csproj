@@ -34,6 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.SqlServerCompact.6.2.0\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.10.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.10.6\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
@@ -43,6 +52,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
@@ -66,10 +79,50 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AbstractRecipeFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\BeansFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\CabbageFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\CarrotFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\CeleriacFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\CheeseFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\CucumberFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\EggFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\FlourFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\LeekFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\ParsleyFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\PeasFactory.cs" />
+    <Compile Include="ConcreteIngredientFactories\TomatoesFactory.cs" />
+    <Compile Include="ConcreteIngredients\Beans.cs" />
+    <Compile Include="ConcreteIngredients\Cabbage.cs" />
+    <Compile Include="ConcreteIngredients\Carrot.cs" />
+    <Compile Include="ConcreteIngredients\Celeriac.cs" />
+    <Compile Include="ConcreteIngredients\Cheese.cs" />
+    <Compile Include="ConcreteIngredients\Cucumber.cs" />
+    <Compile Include="ConcreteIngredients\Egg.cs" />
+    <Compile Include="ConcreteIngredients\Leek.cs" />
+    <Compile Include="ConcreteIngredients\Parsley.cs" />
+    <Compile Include="ConcreteIngredients\Peas.cs" />
+    <Compile Include="ConcreteIngredients\Tomatoes.cs" />
     <Compile Include="FactoryPicker.cs" />
-    <Compile Include="FridgeFiller.cs" />
+    <Compile Include="ConcreteIngredients\Flour.cs" />
+    <Compile Include="FoodPuller.cs" />
+    <Compile Include="MainWindowFridgeFiller.cs" />
     <Compile Include="NewIngredientSaver.cs" />
+    <Compile Include="IRecipeBook.cs" />
+    <Compile Include="NewRecipe.xaml.cs">
+      <DependentUpon>NewRecipe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options.xaml.cs">
+      <DependentUpon>Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RecipeConverter.cs" />
+    <Compile Include="StandardRecipeFactory.cs" />
+    <Compile Include="StateChecker.cs" />
+    <Compile Include="WindowRecipeBook.xaml.cs">
+      <DependentUpon>WindowRecipeBook.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StandardFridge.cs" />
+    <Compile Include="StandardRecipes.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -81,17 +134,29 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataBasePull.cs" />
+    <Compile Include="DataBasePuller.cs" />
     <Compile Include="FreeSqlDataBase.cs" />
-    <Compile Include="IngredientFactory.cs" />
+    <Compile Include="AbstractIngredientFactory.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NewRecipe.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowRecipeBook.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Milk.cs" />
-    <Compile Include="MilkFactory.cs" />
+    <Compile Include="ConcreteIngredients\Milk.cs" />
+    <Compile Include="ConcreteIngredientFactories\MilkFactory.cs" />
     <Compile Include="OnlineDataBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -152,5 +217,15 @@
   <ItemGroup>
     <Resource Include="docs\MySqlCommand.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

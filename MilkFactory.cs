@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace FridgeWPF
 {
-    public class MilkFactory : IngredientFactory
+    public class MilkFactory : AbstractIngredientFactory
     {
-        public override string name { get; } = "Milk";
+        public override string Name { get; protected set; } = "Milk";
         public override AbstractIngredient Create(double amount, DateTime expiryDate)
         {
             return new Milk(amount, expiryDate);
+        }
+
+        public override AbstractIngredient Create(double amount)
+        {
+            return new Milk(amount);
         }
     }
 }
