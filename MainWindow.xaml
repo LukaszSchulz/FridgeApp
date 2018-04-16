@@ -8,7 +8,7 @@
         Title="MainWindow" Height="465" Width="593">
     <Grid Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}">
         <Label x:Name="lblFridgeName" Content="Fridge Content:" HorizontalAlignment="Left" Margin="349,11,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <Button x:Name="btnRefreshFridgeContent" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="500,390,0,0" Click="btnRefreshFridgeContent_Click"/>
+        <Button x:Name="btnRefreshFridgeContent" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="500,390,0,0" Click="BtnRefreshFridgeContent_Click"/>
         <ListView x:Name="lstFridgeContent" HorizontalAlignment="Left" Height="348" VerticalAlignment="Top" Width="226" Margin="349,37,0,0">
             <ListView.View>
                 <GridView>
@@ -19,7 +19,9 @@
         <TextBox x:Name="txtInputAmount" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="54,67,0,0"/>
         <ComboBox x:Name="cmbIngredientList" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="54,40,0,0"/>
         <DatePicker x:Name="cldExpiryDate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="54,95,0,0"/>
-        <Button x:Name="btnAddNewIngredient" Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="99,124,0,0" Click="btnAddNewIngredient_Click"/>
-        <Button x:Name="btnDeleteIngredient" Content="Throw out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="420,390,0,0" Click="btnDeleteIngredient_Click"/>
+        <Button x:Name="btnAddNewIngredient" Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="99,124,0,0" Click="BtnAddNewIngredient_Click"/>
+        <Button x:Name="btnDeleteIngredient" Content="Throw out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="420,390,0,0" Click="BtnDeleteIngredient_Click"/>
+        <Button x:Name="btnOpenRecipeBook" Content="Go to recipe book" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="54,173,0,0" Click="BtnOpenRecipeBook_Click"/>
+        <Button x:Name="btnOptions" Content="Options" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,404,0,0" Click="btnOptions_Click"/>
     </Grid>
 </Window>

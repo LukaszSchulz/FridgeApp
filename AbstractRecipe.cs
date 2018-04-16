@@ -8,10 +8,9 @@ namespace FridgeWPF
 {
     public abstract class AbstractRecipe
     {
-        private string Name;
-        List<AbstractIngredient> ListOfIngredients;
-        private string Description;
-        //OnlineDataBase onlineDataBase;
+        public string Name { get; }
+        public List<AbstractIngredient> ListOfIngredients { get; protected set; }
+        public string Description { get; protected set; }
 
         public AbstractRecipe(string name)
         {
@@ -19,28 +18,22 @@ namespace FridgeWPF
             ListOfIngredients = new List<AbstractIngredient>();
         }
 
-        public AbstractRecipe(string name, string description)
+        public AbstractRecipe(string name, List<AbstractIngredient> listOfIngredients, string description)
         {
             Name = name;
+            ListOfIngredients = listOfIngredients;
             Description = description;
-            ListOfIngredients = new List<AbstractIngredient>();
         }
 
-        public abstract void AddIngredients(AbstractIngredient ingredient);
-
-        public List<AbstractIngredient> GetListOfIngredients()
+        public void AddIngredient(AbstractIngredient ingredient)
         {
-            return ListOfIngredients;
+            ListOfIngredients.Add(ingredient);
         }
 
-        public string GetRecipeName()
+        public void Describe(string newDescription)
         {
-            return Name;
+            Description = newDescription;
         }
 
-        void AddToDataBase()
-        {
-            
-        }
     }
 }
