@@ -17,9 +17,9 @@ namespace FridgeWPF
     /// <summary>
     /// Interaction logic for Options.xaml
     /// </summary>
-    public partial class Options : Window
+    public partial class Options : Window//okno umożliwiające zdalny wybór serwera
     {
-        public MainWindow Window { get; }
+        public MainWindow Window { get; } //przez okno główne Options ma dostęp do lodówki i narzędzi obsługujących bazę danych
 
         public Options(MainWindow window)
         {
@@ -27,22 +27,59 @@ namespace FridgeWPF
             Window = window;
         }
 
-        private void SetConnectionString(OnlineDataBase dataBase)
+        private void SetConnectionString()
         {
-            dataBase.SetDatabase
-                (
-                txtServerName.Text,
-                txtDataBaseName.Text,
-                txtUsername.Text,
-                txtPassword.Password.ToString()
-                );
+            if(txtServerName.Text.Length>0 &&
+                txtDataBaseName.Text.Length > 0 &&
+                txtUsername.Text.Length > 0 &&
+                txtPassword.Password.Length > 0)
+                {
+                    Window.DataBase.SetDatabase //ustawia nowe parametry do łączenia zserwerem 
+                    (txtServerName.Text,
+                    txtDataBaseName.Text,
+                    txtUsername.Text,
+                    txtPassword.Password.ToString()
+                    );
+                MessageBox.Show("You have changed your server temporarily.");
+            }
+            else
+            {
+                MessageBox.Show("Please fill the form first.");
+            }
         }
 
-        private void btnSetNewServer_Click(object sender, RoutedEventArgs e)
+        private void btnSetNewServer_Click(object sender, RoutedEventArgs e)//obsługuje przycisk zmieniający tymczasowo ustawienia 
+        {                                                                   //bazy danych
+            SetConnectionString();//wykorzystuje lokalną metodę do zmiany parametrów
+                                                                            //connection stringa
+            Close();    //zamyka okno po wykonaniu zadania
+        }
+
+        private void btnDefault_Click(object sender, RoutedEventArgs e)//ustawia domyślną bazę danych dla aplikacji
         {
-            SetConnectionString(Window.fridge.Filler.dataBasePull.DataBase);
-            MessageBox.Show("You have changed your server temporarily.");
-            Close();
+            Window.DataBase = new MySqlDataBase();//tworzy nową instancję bazy danych
+            Window.DataBase.SetDatabase("sql11.freesqldatabase.com", "sql11227333", "sql11227333", "F48xDrZZcw");
+                                                //podaje parametry do połączenia
+            Window.IsEnabled = true;//odblokowuje ekran
+            Close();    //zamyka okno
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)//Przycisk obsługujący zamknięcie okna
+        {
+            MessageBoxResult result;
+            result=MessageBox.Show("Are you sure?\nThis will cause whole application to close", //przy próbie zamknięcia pojawia
+                "Closing app",                                                                    //się ostrzeżenie
+                MessageBoxButton.OKCancel, 
+                MessageBoxImage.Asterisk);
+
+            if (result == MessageBoxResult.OK) //jeśli klient naciśnie ok - zamknie się cała aplikacja 
+            {
+                Window.Close();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

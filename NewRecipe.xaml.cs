@@ -17,20 +17,20 @@ namespace FridgeWPF
     /// <summary>
     /// Interaction logic for NewRecipe.xaml
     /// </summary>
-    public partial class NewRecipe : Window
+    public partial class NewRecipe : Window //okno z funkcjami dodawania nowych przepisów
     {
-        private List<AbstractIngredient> list = new List<AbstractIngredient>();
-
-        public OnlineDataBase DataBase { get; }
+        private List<AbstractIngredient> list = new List<AbstractIngredient>();//robocza lista składników, 
+                                                                                //na podstawie której powstanie lista przepisu
+        public OnlineDataBase DataBase { get; }//zapewnia dostęp do bazy danych
 
         public NewRecipe(OnlineDataBase dataBase)
         {
             InitializeComponent();
-            FillComboBox();
+            FillComboBox();//wypełnia comboBox przy inicjalizacji
             DataBase = dataBase;
         }
 
-        private void FillComboBox()
+        private void FillComboBox()//metoda wypełniająca combobox wszystkimi zaprogramowanymi nazwami składników
         {
             foreach (AbstractIngredientFactory IF in FactoryPicker.Instance.listOfFactories)
             {
@@ -38,20 +38,22 @@ namespace FridgeWPF
             }
         }
 
-        private void btnAddIngredientToRecipe_Click(object sender, RoutedEventArgs e)
+        private void btnAddIngredientToRecipe_Click(object sender, RoutedEventArgs e)//dodaje nowy składnik na listę roboczą 'list'
         {
-            lstIngredients.Items.Clear();
+            lstIngredients.Items.Clear();//czyści listę składników, przed wypełnieniem jej jej aktualną wersją
 
             AbstractIngredientFactory factory = FactoryPicker.Instance.Pick(cmbIngredientList.SelectedItem.ToString());
+                                                    //wybiera odpowiednią fabrykę na podstawie wybranej nazwy
             AbstractIngredient ingredient = factory.Create(Convert.ToDouble(txtAmount.Text));
-
-            list.Add(ingredient);
-            FillTheList();
+                                                    //tworzy nowy składnik z parametrami podanymi w formularzu przez użytkownika
+            list.Add(ingredient);//dodaje nowy składnik na listę roboczą
+            FillTheList();//wypełnia listę składników na liście roboczej na nowo
         }
 
-        private void btnRemove_Click(object sender, RoutedEventArgs e)
-        {
-            foreach(AbstractIngredient AI in list)
+        private void btnRemove_Click(object sender, RoutedEventArgs e) //Usuwa z listy roboczej 'list' składnik, który nie ma się 
+        {                                                               //znaleźć w ostatecznej wersji przepisu
+            foreach(AbstractIngredient AI in list) //Porównuje parametry składnika z ich opisem na listboxie i kiedy znajdzie 
+                                                    //identyczne - usuwa je i aktualizuje widok
             {
                 if(lstIngredients.SelectedItem.ToString().Split(' ')[0] == AI.Name &&
                     lstIngredients.SelectedItem.ToString().Split(' ')[1] == AI.Amount.ToString())
@@ -64,27 +66,32 @@ namespace FridgeWPF
             }
         }
 
-        private void FillTheList()
+        private void FillTheList()//Wypełnia listview składnikami z listy roboczej 'list'
         {
             foreach (AbstractIngredient AI in list)
             {
-                lstIngredients.Items.Add($"{AI.Name} {AI.Amount} {AI.Unit}");
+                lstIngredients.Items.Add($"{AI.Name} {AI.Amount} {AI.Unit}"); //dodaje do listviewboxa string 
+                                                                                //z parametrami składnika
             }
         }
 
         private void cmbIngredientList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+                                                                //przy wskazaniu rodzaju składnika, pojawia się nazwa jednostki,
+                                                                //w której użytkownik powinien podać ilość składnika
         {
             lblUnit.Content = FactoryPicker.Instance.Pick(cmbIngredientList.SelectedItem.ToString()).Create(0).Unit;
+                                                                //factorypicker tworzy instancję pustego składnika wybranego rodzaju,
+                                                                //żeby uzyskać dostęp do nazwy jego jednostki
         }
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
-        {
-            if(txtName.Text!=null && txtDescription.Text != null && list.Count > 0)
-            {
+        private void btnSave_Click(object sender, RoutedEventArgs e)//metoda zatwierdzająca nowy przepis, tworząca jego instancję
+        {                                                           //oraz dodająca ją do bazy danych
+            if(txtName.Text!=null && txtDescription.Text != null && list.Count > 0) //metoda działa wyłącznie, jeśli wszystkie pola
+            {                                                                       //zostaną wypełnione
                 try
                 {
-                    DataBase.AddRecipeToDatabase(new StandardRecipeFactory().
-                        CreateRecipe(txtName.Text, list, txtDescription.Text));
+                    DataBase.AddRecipeToDatabase(new StandardRecipeFactory().   //metoda wykorzystuje fabrykę, do stworzenia nowej
+                        CreateRecipe(txtName.Text, list, txtDescription.Text)); //instancji przepisu
                 }
                 catch(Exception ex)
                 {
@@ -92,15 +99,14 @@ namespace FridgeWPF
                 }
                 finally
                 {
-                    MessageBox.Show("New recipe added successfully!");
-                    new NewRecipe(DataBase).Show();
-                    this.Close();
+                    new NewRecipe(DataBase).Show();//po zapisaniu, otwiera się nowe okno nowego przepisu
+                    this.Close();                   //a to zostaje zamknięte
                 }
             }
             else
             {
-                MessageBox.Show("Please fill the form first!", "Information", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please fill the form first!", "Information", //w przypadku, kiedy wszystkie pola nie są wypełnione, 
+                    MessageBoxButton.OK, MessageBoxImage.Information);       //wyświetla się informacja z prośbą o ich wypełnienie
             }
         }
     }

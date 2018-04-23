@@ -17,11 +17,11 @@ namespace FridgeWPF
     /// <summary>
     /// Interaction logic for RecipeBook.xaml
     /// </summary>
-    public partial class WindowRecipeBook : Window, IRecipeBook
+    public partial class WindowRecipeBook : Window, IRecipeBook //Okno obsługujące listę z przepisami
     {
-        MainWindow window;
-        public List<AbstractRecipe> Recipebook { get; } = new List<AbstractRecipe>();
-        DataBasePuller puller;
+        MainWindow window;              // na podstawie okna głównego RecipeBook może korzystać z instancji lodówki
+        public List<AbstractRecipe> Recipebook { get; } = new List<AbstractRecipe>();//lista przepisów wymagana przez interfejs
+        MySqlDataBasePuller puller;//umożliwia dostęp do pobierania danych z bazy danych
 
         public WindowRecipeBook(MainWindow window)
         {
@@ -29,47 +29,33 @@ namespace FridgeWPF
             RefreshRecipeBook();
             this.window = window;
         }
-
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshRecipeBook();
-        }
-
-        private void RefreshRecipeBook()
-        {
-            Recipebook.Clear();
-            puller = new DataBasePuller(new FreeSqlDataBase());
-            puller.PullRecipesFromDatabase("SELECT * FROM Recipes", this);
-            lstRecipeBook.Items.Clear();
-            foreach(AbstractRecipe recipe in Recipebook)
-            {
-                lstRecipeBook.Items.Add(recipe.Name);
-            }
-        }
         
         private void lstRecipeBook_SelectionChanged(object sender, SelectionChangedEventArgs e) //wypełnia listę składnikami
-                                                                                                // na wybrany przepis
+                                                                                                // na wybrany przepis z listy
         {
-            lstChosenRecipe.Items.Clear();
-
             try
             {
-                foreach (AbstractRecipe AR in Recipebook)
+                if (lstRecipeBook.SelectedItem != null) //sprawdza, czy na pewno został wybrany któryś z przepisów
                 {
-                    if (AR.Name == lstRecipeBook.SelectedItem.ToString())
+                    lstChosenRecipe.Items.Clear();
+                    foreach (AbstractRecipe AR in Recipebook)
                     {
-                        lstChosenRecipe.Items.Add(AR.Name);
 
-                        foreach(AbstractIngredient AI in AR.ListOfIngredients)
+                        if (AR.Name == lstRecipeBook.SelectedItem.ToString())
                         {
-                            lstChosenRecipe.Items.Add(AI.Name + " " + AI.Amount + " " + AI.Unit);
-                        }
+                            lstChosenRecipe.Items.Add(AR.Name);
 
-                        lstChosenRecipe.Items.Add(AR.Description);
+                            foreach (AbstractIngredient AI in AR.ListOfIngredients)
+                            {
+                                lstChosenRecipe.Items.Add(AI.Name + " " + AI.Amount + " " + AI.Unit); 
+                                                                    //tworzy wpis na listę składników
+                            }
+                            lstChosenRecipe.Items.Add(AR.Description);//dodaje opis do przepisu
+                        }
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -77,7 +63,7 @@ namespace FridgeWPF
 
         private void btnAddNewRecipe_Click(object sender, RoutedEventArgs e)
         {
-            NewRecipe newRecipe = new NewRecipe(new FreeSqlDataBase());
+            NewRecipe newRecipe = new NewRecipe(window.DataBase);
             newRecipe.Show();
         }
 
@@ -89,7 +75,7 @@ namespace FridgeWPF
                 {
                     if (AR.Name == lstRecipeBook.SelectedItem.ToString())
                     {
-                        if (window.fridge.IsThereEnough(AR))
+                        if (window.Fridge.IsThereEnough(AR))
                         {
                             MessageBox.Show($"You have enough ingredients to make {AR.Name}!");
                         }
@@ -102,15 +88,16 @@ namespace FridgeWPF
             }
         }
 
-        private void btnOnlyAvailible_Click(object sender, RoutedEventArgs e)
+        private void btnOnlyAvailible_Click(object sender, RoutedEventArgs e) //wyświetla na liście przepisów tylko te, 
+                                                                            //dla których jest wystarczająca ilość składników
         {
-            Recipebook.Clear();
-            puller = new DataBasePuller(new FreeSqlDataBase());
-            puller.PullRecipesFromDatabase("SELECT * FROM Recipes", this);
+            Recipebook.Clear(); //robi miejsce na wyselekcjonowane przepisy
+            puller = new MySqlDataBasePuller(window.DataBase);//dostarcza metody potrzebne do pobierania danych
+            puller.PullRecipesFromDatabase("SELECT * FROM Recipes", this);//wybiera które przepisy mają być przejrzane 
             lstRecipeBook.Items.Clear();
             foreach (AbstractRecipe recipe in Recipebook)
             {
-                if (window.fridge.IsThereEnough(recipe) == true)
+                if (window.Fridge.IsThereEnough(recipe) == true)
                 {
                     lstRecipeBook.Items.Add(recipe.Name);
                 }
@@ -120,22 +107,41 @@ namespace FridgeWPF
         private void btnUseRecipe_Click(object sender, RoutedEventArgs e) //wybiera przepis do wykonania na podstawie 
                                                                         //selekcji z listy
         {
-            FoodPuller foodPuller = new FoodPuller(window.fridge, puller);
-
+            FoodPuller foodPuller = new FoodPuller(window.Fridge, puller); //klasa dzięki której możliwe jest usuwanie 
+                                                                            //wybranych składników z bazy danych
             if (lstRecipeBook.SelectedItem != null)
             {
                 foreach (AbstractRecipe recipe in Recipebook)
                 {
                     if (recipe.Name == lstRecipeBook.SelectedItem.ToString())
                     {
-                        foodPuller.PullAllForRecipe(recipe);
-                        window.RefreshPage();
+                        foodPuller.PullAllForRecipe(recipe);//usuwa z lodówki składniki potrzebne do przepisu, po uprzednim sprawdzeniu,
+                                                            // czy jest ich wystarczająca ilość
+                        window.RefreshPage(); //odświeża widok na oknie ze składnikami
                     }
                 }
             }
             else
             {
                 MessageBox.Show("Choose a recipe first!");
+            }
+            RefreshRecipeBook();
+        }
+
+        private void btnShowAllRecipes_Click(object sender, RoutedEventArgs e) // odświeża widok "książki z przepisami"
+        {
+            RefreshRecipeBook();
+        }
+
+        private void RefreshRecipeBook() // metoda odświeżająca widok dla przycisku ShowAllRecipes
+        {
+            Recipebook.Clear();
+            puller = new MySqlDataBasePuller(window.DataBase);//umożliwia pobieranie informacji o przepisach i składnikach z bazy
+            puller.PullRecipesFromDatabase("SELECT * FROM Recipes", this); // wypełnia listę przepisów dostarczoną przez interfejs 
+            lstRecipeBook.Items.Clear();//usuwa wszystkie przedmioty z listy, żeby się nie dublowały
+            foreach (AbstractRecipe recipe in Recipebook) //wypełnia listView nazwami przepisów
+            {
+                lstRecipeBook.Items.Add(recipe.Name);
             }
         }
     }
