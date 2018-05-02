@@ -8,10 +8,6 @@ namespace FridgeWPF.ConcreteIngredients
 {
     public class Carrot : AbstractIngredient
     {
-        public Carrot()
-        {
-        }
-
         public Carrot(double amount) : base(amount)
         {
         }

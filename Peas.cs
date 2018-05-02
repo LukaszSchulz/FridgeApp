@@ -4,10 +4,6 @@ namespace FridgeWPF.ConcreteIngredients
 {
     public class Peas : AbstractIngredient
     {
-        public Peas()
-        {
-        }
-
         public Peas(double amount) : base(amount)
         {
         }

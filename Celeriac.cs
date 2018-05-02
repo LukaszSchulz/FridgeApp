@@ -4,10 +4,6 @@ namespace FridgeWPF.ConcreteIngredients
 {
     public class Celeriac : AbstractIngredient
     {
-        public Celeriac()
-        {
-        }
-
         public Celeriac(double amount) : base(amount)
         {
         }

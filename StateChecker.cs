@@ -7,41 +7,57 @@ using System.Windows;
 
 namespace FridgeWPF
 {
-    public class StateChecker // służy do porównywania stanu lodówki z listą składników z przepisu
+    public class StateChecker // dostarcza narzędzia do porównywania stanu lodówki z listą składników z przepisu
     {
-        protected AbstractFridge Fridge { get; private set; }
+        protected AbstractFridge Fridge { get; private set; }//umożliwia dostęp do lodówki
 
         public StateChecker(AbstractFridge fridge)
         {
             Fridge = fridge;
         }
 
-        private List<AbstractIngredient> SumFridgeIngredients() // tworzy listę unikalnych produktów ze zsumowanymi ilościami
+        public List<AbstractIngredient> EmptyListOfIngredients //lista nazw składników, na podstawie której powstanie lista docelowa
         {
-            List<AbstractIngredient> list = Fridge.GetContent();
-            
-            for(int i = 0; i < list.Count; i++)
+            get
             {
-                for (int j = 0; j < Fridge.GetContent().Count; j++)
+                List<AbstractIngredient> EmptyIngredientList = new List<AbstractIngredient>(); 
+                foreach (AbstractIngredientFactory f in FactoryPicker.Instance.listOfFactories)//wykorzystuje dostępną listę fabryk
+                                                                                               //do stworzenia listy nazw
                 {
-                    if (i != j)
+                    string factoryName = f.Name;
+                    EmptyIngredientList.Add(FactoryPicker.Instance.Pick(factoryName).Create(0));//tworzy puste instancje składników,
+                                                                                                // do wypełniania przez zawartość
+                                                                                                //bazy danych
+                }
+                return EmptyIngredientList;
+            }
+        }
+
+        private List<AbstractIngredient> SumFridgeIngredients() // tworzy i zwraca listę unikalnych produktów 
+                                                                //ze zsumowanymi ilościami
+        {
+            List<AbstractIngredient> ListOfUniqueIngredients = EmptyListOfIngredients; //lokalna lista, której składniki będą
+                                                                                       //uzupełniane o ilości
+            foreach(AbstractIngredient i in Fridge.Content)
+            {
+                foreach(AbstractIngredient Unique in ListOfUniqueIngredients)
+                {
+                    if (i.Name == Unique.Name) //sprawdza, czy nazwy składników się zgadzają i jeśli tak, 
+                                                //to uzupełnia ich właściwość Amount
                     {
-                        if (list[i].Name == Fridge.GetContent()[j].Name)
-                        {
-                            list[i].AddAmount(Fridge.GetContent()[j].Amount);
-                            list.RemoveAt(j);
-                        }
+                        Unique.AddAmount(i.Amount);
                     }
                 }
             }
-            return list;
+            return ListOfUniqueIngredients;
         }
 
         public bool Check(AbstractRecipe recipe) //porównuje ilości dostępnych składników z tymi, 
                                                     //które są potrzebne w przepisie
         {
             List<AbstractIngredient> AvailibleIngredients = SumFridgeIngredients();
-            int Count = recipe.ListOfIngredients.Count;
+            int Count = recipe.ListOfIngredients.Count;//przechowuje ilość składników, 
+                                                        //które jeszcze zostały do odnalezienia i porówniana
 
             foreach (AbstractIngredient recipeIngredient in recipe.ListOfIngredients)
             {
@@ -49,16 +65,19 @@ namespace FridgeWPF
                 {
                     if(AvailibleIngredients[i].Name == recipeIngredient.Name)
                     {
-                        if (AvailibleIngredients[i].Amount < recipeIngredient.Amount)
+                        if (AvailibleIngredients[i].Amount < recipeIngredient.Amount)//jeśli okazuje się, 
+                                                                                     //że któregokolwiek składnika jest za mało, 
+                                                                                     //pętla jest przerywana i metoda zwraca false
                         {
                             return false;
                         }
                         else
                         {
-                            Count -= 1;
+                            Count -= 1;//jeśli ilość się zgadza, odznacza się, że jeden ze składników został znaleziony
                         }
                     }
-                    if (Count <= 0) return true;
+                    if (Count <= 0) return true;//tylko w przypadku, kiedy wszystkie składniki zostały znalezione,
+                                                //metoda zwraca true
                 }
             }
             return false;

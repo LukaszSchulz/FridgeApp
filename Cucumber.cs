@@ -4,10 +4,6 @@ namespace FridgeWPF.ConcreteIngredients
 {
     public class Cucumber : AbstractIngredient
     {
-        public Cucumber()
-        {
-        }
-
         public Cucumber(double amount) : base(amount)
         {
         }

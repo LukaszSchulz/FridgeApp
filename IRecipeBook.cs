@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FridgeWPF
 {
-    public interface IRecipeBook
+    public interface IRecipeBook // interfejs wymuszający posiadanie listy przepisów o nazwie Recipebook
     {
         List<AbstractRecipe> Recipebook { get; }
     }

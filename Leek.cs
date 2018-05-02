@@ -4,10 +4,6 @@ namespace FridgeWPF.ConcreteIngredients
 {
     public class Leek : AbstractIngredient
     {
-        public Leek()
-        {
-        }
-
         public Leek(double amount) : base(amount)
         {
         }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FridgeWPF"
         mc:Ignorable="d"
-        Title="Options" Height="206" Width="247">
+        Title="Options" Height="206" Width="247" Closing="Window_Closing">
     <Grid>
         <TextBox x:Name="txtServerName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="106,36,0,0"/>
         <TextBox x:Name="txtDataBaseName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="106,64,0,0"/>
@@ -16,6 +16,7 @@
         <Label Content="Username:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,88,0,0"/>
         <Label Content="Password:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,114,0,0"/>
         <Button x:Name="btnSetNewServer" Content="Set new database" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" Margin="122,143,0,0" Click="btnSetNewServer_Click"/>
+        <Button x:Name="btnDefault" Content="Use defult database" HorizontalAlignment="Left" VerticalAlignment="Top" Width="216" Margin="10,10,0,0" Click="btnDefault_Click"/>
 
     </Grid>
 </Window>

@@ -2,15 +2,17 @@
 
 namespace FridgeWPF
 {
-     sealed class FactoryPicker //SINGLETON przechowuje listę dostępnych, zaprogramowanych fabryk 
-                                //trzeba tu dodać każdą nową fabrykę
+     sealed class FactoryPicker //SINGLETON umożliwiający wybieranie odpowiedniej fabryki na podstawie nazwy docelowego produktu
+                                //przechowuje listę dostępnych, zaprogramowanych fabryk 
+                                //trzeba tu dodać każdą nową fabrykę, która ma być wykorzystywana przez program
         {
             public List<AbstractIngredientFactory> listOfFactories = new List<AbstractIngredientFactory>();
-            private static FactoryPicker instance;
+                                                                            //przechowuje listę dostępnych fabryk
+            private static FactoryPicker instance;//prywatna instancja singletona
 
             private FactoryPicker()
             {
-            listOfFactories = new List<AbstractIngredientFactory>()
+            listOfFactories = new List<AbstractIngredientFactory>()//poszczególne fabryki dodawane są w konstruktorze
             {
                 new BeansFactory(),
                 new CabbageFactory(),
@@ -28,7 +30,7 @@ namespace FridgeWPF
             };
             }
 
-            public static FactoryPicker Instance
+            public static FactoryPicker Instance//właściwość z publicznym getterem, umożliwiająca dostęp do Pickera
             {
                 get
                 {
@@ -40,18 +42,18 @@ namespace FridgeWPF
                 }
             }
 
-            public AbstractIngredientFactory Pick(string ingredientName) //dobiera fabrykę na podstawie jej nazwy zakodowanej w bazie danych
-            {
+            public AbstractIngredientFactory Pick(string ingredientName) 
+            {                                   //dobiera fabrykę na podstawie jej nazwy zakodowanej w bazie danych
                 AbstractIngredientFactory pickedFactory=null;
-                foreach(AbstractIngredientFactory IF in listOfFactories)
-                {
+                foreach(AbstractIngredientFactory IF in listOfFactories)//porównuje nazwę każdej fabryki z listy z nazwą podanego 
+                {                                                       //składnika
                     if (ingredientName == IF.Name)
                     {
                         pickedFactory = IF;
                         return pickedFactory;
                     }
                 }
-                return pickedFactory;
+                return pickedFactory; //zwraca wybraną fabrykę
             }
     }
 }

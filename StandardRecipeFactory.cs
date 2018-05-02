@@ -2,7 +2,7 @@
 
 namespace FridgeWPF
 {
-    public class StandardRecipeFactory : AbstractRecipeFactory
+    public class StandardRecipeFactory : AbstractRecipeFactory //konkretna fabryka składników o braku dodatkowych właściwości
     {
         public override AbstractRecipe CreateRecipe(string name, List<AbstractIngredient> listOfIngredients, string description)
         {
